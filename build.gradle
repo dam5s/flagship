@@ -1,0 +1,71 @@
+group = "flagship"
+version = "1.0-SNAPSHOT"
+description = """Flagship"""
+
+ext {
+    jettyVersion = "9.3.0.M1"
+    jerseyVersion = "1.18.3"
+    jacksonVersion = "1.9.13"
+}
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+apply plugin: "java"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile "com.google.guava:guava:14.0.1"
+    compile "com.google.inject:guice:3.0"
+    compile "org.slf4j:slf4j-api:1.7.5"
+    compile "org.slf4j:slf4j-simple:1.7.5"
+
+    // REST DEPENDENCIES
+    compile "com.google.inject.extensions:guice-servlet:3.0"
+    compile "org.eclipse.jetty:jetty-server:$jettyVersion"
+    compile "org.eclipse.jetty:jetty-servlet:$jettyVersion"
+    compile "org.eclipse.jetty:jetty-plus:$jettyVersion"
+    compile "com.sun.jersey:jersey-server:$jerseyVersion"
+    compile "com.sun.jersey:jersey-servlet:$jerseyVersion"
+    compile "com.sun.jersey.contribs:jersey-guice:$jerseyVersion"
+    compile "com.sun.jersey:jersey-json:$jerseyVersion"
+    compile "org.codehaus.jackson:jackson-mapper-asl:$jacksonVersion"
+    compile "org.codehaus.jackson:jackson-jaxrs:$jacksonVersion"
+
+    // DATABASE DEPENDENCIES
+    compile "mysql:mysql-connector-java:5.1.26"
+    compile "org.mybatis:mybatis:3.2.2"
+    compile "org.mybatis:mybatis-guice:3.4"
+
+    // TEST DEPENDENCIES
+    testCompile "junit:junit:4.11"
+    testCompile "org.apache.httpcomponents:httpclient:4.2.5"
+    testCompile "org.apache.httpcomponents:httpcore:4.3"
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.barinek.flagship.App'
+    }
+
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+}
